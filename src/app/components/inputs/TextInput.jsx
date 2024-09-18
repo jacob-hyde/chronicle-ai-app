@@ -23,6 +23,7 @@ export default function TextInput({
   return (
     <FormControl>
       <TextField
+        variant="outlined"
         onChange={field.onChange} // send value to hook form
         onBlur={field.onBlur} // notify when input is touched/blur
         value={field.value || ""} // input value

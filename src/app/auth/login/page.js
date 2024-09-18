@@ -2,7 +2,9 @@
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import TextInput from "../components/inputs/TextInput";
+import axios from "axios";
+import TextInput from "../../components/inputs/TextInput";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Login() {
   const schema = Yup.object().shape({
@@ -12,18 +14,20 @@ export default function Login() {
     password: Yup.string().required("Password is required"),
   });
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, trigger } = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
     resolver: yupResolver(schema),
     shouldFocusError: true,
-    reValidateMode: "onChange",
+    reValidateMode: "onBlur",
     mode: "all",
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (postData) => {
+    await signIn("credentials", { ...postData, redirect: true });
+  };
 
   return (
     <div className="layout-content-container flex justify-center">
@@ -35,30 +39,35 @@ export default function Login() {
           Sign in to your account
         </p>
         <form
-          className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3"
+          className="flex flex-col max-w-[480px]px-4 py-3"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <TextInput
-            control={control}
-            name="email"
-            label="Email"
-            schema="email"
-          />
+          <div className="flex max-w-[480px] px-4 py-3">
+            <TextInput
+              control={control}
+              name="email"
+              label="Email"
+              schema="email"
+            />
+          </div>
+          <div className="flex max-w-[480px] px-4 py-3">
+            <TextInput
+              control={control}
+              name="password"
+              label="Password"
+              type="password"
+              schema="password"
+            />
+          </div>
+          <div className="flex px-4 py-3 justify-center">
+            <button
+              type="submit"
+              className="flex min-w-[84px] max-w-[480px] cursor-pointer primary"
+            >
+              Sign in
+            </button>
+          </div>
         </form>
-        <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
-          <TextInput
-            control={control}
-            name="password"
-            label="Password"
-            type="password"
-            schema="password"
-          />
-        </div>
-        <div className="flex px-4 py-3 justify-center">
-          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer primary">
-            Sign in
-          </button>
-        </div>
         <p className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center">
           OR
         </p>

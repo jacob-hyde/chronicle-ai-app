@@ -45,8 +45,8 @@ button {
   }
 }
 
-.MuiOutlinedInput-root, textarea[variant="outlined"] {
-  @apply border;
+.MuiOutlinedInput-root, .MuiFormControl-root, textarea[variant="outlined"] {
+  @apply border w-full;
 }
 
 textarea {
