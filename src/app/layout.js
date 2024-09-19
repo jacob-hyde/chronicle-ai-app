@@ -11,6 +11,7 @@ import axios from "axios";
 import theme from "./theme";
 
 export default function RootLayout({ children }) {
+  axios.defaults.baseURL = process.env.API_URL;
   axios.defaults.headers.common = {
     ...axios.defaults.headers.common,
     "Content-Type": "application/json",
