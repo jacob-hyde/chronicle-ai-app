@@ -46,9 +46,18 @@ button {
 }
 
 .MuiOutlinedInput-root, .MuiFormControl-root, textarea[variant="outlined"] {
-  @apply border w-full;
+  &:not(.MuiAutocomplete-input) {
+    @apply border w-full;
+  }
 }
 
 textarea {
   padding: 0.5rem;
+}
+
+.MuiAutocomplete-inputRoot {
+  padding-bottom: 16.5px;
+  padding-left: 14px;
+  padding-right: 32px;
+  padding-top: 16.5px;
 }

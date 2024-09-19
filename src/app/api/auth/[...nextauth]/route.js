@@ -5,7 +5,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 axios.defaults.baseURL = "http://localhost";
-axios.defaults.headers = {
+axios.defaults.headers.common = {
   "Content-Type": "application/json",
 };
 
@@ -48,6 +48,7 @@ export const authOptions = {
           password: credentials?.password,
         };
         const headers = {
+          ...axios.defaults.headers.common,
           Cookie: `laravel_session=${sessionKey}`,
           "Content-Type": "application/json",
         };
@@ -56,7 +57,7 @@ export const authOptions = {
           headers["X-XSRF-TOKEN"] = xsrfToken;
         }
 
-        axios.defaults.headers = headers;
+        axios.defaults.headers.common = headers;
 
         try {
           const response = await axios.post(
@@ -65,6 +66,10 @@ export const authOptions = {
           );
 
           if (response.status === 200) {
+            axios.defaults.headers = {
+              ...axios.defaults.headers,
+              Authorization: `Bearer ${response.data.data.access_token}`,
+            };
             return response.data.data;
           } else {
             // console.log("HTTP error! Status:", response.status);

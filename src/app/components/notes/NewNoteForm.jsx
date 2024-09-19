@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import SelectInput from "../inputs/SelectInput";
 import { forwardRef } from "react";
 import TextAreaInput from "../inputs/TextAreaInput";
+import AutoCompleteInput from "../inputs/AutoCompleteInput";
 function NewNoteForm() {
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -30,7 +31,7 @@ function NewNoteForm() {
           />
         </div>
         <div className="sm:w-1/3 w-full">
-          <SelectInput
+          <AutoCompleteInput
             control={control}
             name="tags"
             label="Tags"
