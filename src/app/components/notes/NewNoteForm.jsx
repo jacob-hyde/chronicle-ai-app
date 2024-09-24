@@ -4,6 +4,9 @@ import SelectInput from "../inputs/SelectInput";
 import { forwardRef } from "react";
 import TextAreaInput from "../inputs/TextAreaInput";
 import AutoCompleteInput from "../inputs/AutoCompleteInput";
+import { useSelector } from "react-redux";
+import { addUserTag } from "../../services/ApiService";
+
 function NewNoteForm() {
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -12,6 +15,9 @@ function NewNoteForm() {
     },
     mode: "all",
   });
+
+  const projects = useSelector((state) => state.projects.active);
+  const tags = useSelector((state) => state.user.tags);
 
   const onSubmit = (data) => console.log(data);
 
@@ -23,11 +29,10 @@ function NewNoteForm() {
             control={control}
             name="project"
             label="Project"
-            options={[
-              { name: "Project 1", value: "project-1" },
-              { name: "Project 2", value: "project-2" },
-              { name: "Project 3", value: "project-3" },
-            ]}
+            options={projects.map((project) => ({
+              name: project.name,
+              value: project.id,
+            }))}
           />
         </div>
         <div className="sm:w-1/3 w-full">
@@ -37,11 +42,11 @@ function NewNoteForm() {
             label="Tags"
             multiple
             chips
-            options={[
-              { name: "Project 1", value: "project-1" },
-              { name: "Project 2", value: "project-2" },
-              { name: "Project 3", value: "project-3" },
-            ]}
+            options={tags.map((tag) => ({
+              name: tag.name,
+              value: tag.id,
+            }))}
+            onAdd={addUserTag}
           />
         </div>
       </div>

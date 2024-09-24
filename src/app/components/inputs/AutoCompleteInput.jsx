@@ -2,11 +2,11 @@
 import {
   FormControl,
   InputLabel,
-  Box,
   Chip,
   Autocomplete,
   TextField,
 } from "@mui/material";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import { useController } from "react-hook-form";
 
 const ITEM_HEIGHT = 48;
@@ -20,12 +20,15 @@ const MenuProps = {
   },
 };
 
+const filter = createFilterOptions();
+
 export default function AutoCompleteInput({
   control,
   name,
   options,
   label,
   multiple,
+  onAdd = null,
   chips,
 }) {
   const {
@@ -42,6 +45,21 @@ export default function AutoCompleteInput({
       <FormControl className="w-full">
         <Autocomplete
           onChange={(event, selectedOptions) => {
+            selectedOptions = selectedOptions.map((option) => {
+              if (event.type === "keydown" && event.key === "Enter") {
+                if (!options.map((op) => op.name).includes(option) && onAdd) {
+                  onAdd(option);
+                }
+              }
+
+              if (option.startsWith("Add")) {
+                option = option.slice(5).slice(0, -1);
+                if (onAdd) {
+                  onAdd(option);
+                }
+              }
+              return option;
+            });
             field.onChange(selectedOptions);
           }} // send value to hook form
           freeSolo
@@ -65,6 +83,20 @@ export default function AutoCompleteInput({
           }
           options={options.map((option) => option.name)}
           renderInput={(params) => <TextField {...params} label="Tags" />}
+          filterOptions={(options, params) => {
+            const filtered = filter(options, params);
+
+            const { inputValue } = params;
+            // Suggest the creation of a new value
+            const isExisting = options.some(
+              (option) => inputValue === option.name
+            );
+            if (inputValue !== "" && !isExisting) {
+              filtered.push(`Add "${inputValue}"`);
+            }
+
+            return filtered;
+          }}
         />
       </FormControl>
     );
